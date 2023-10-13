@@ -1,0 +1,30 @@
+pre {
+  background: #303030;
+  color: #f1f1f1;
+  padding: 10px 16px;
+  border-radius: 2px;
+  -moz-box-shadow: inset 0 0 10px #000;
+  box-shadow: inset 0 0 10px #000;
+  counter-reset: line 1;
+}
+
+pre > span::before {
+  content: "1";
+  display: inline-block;
+  padding: 0 0.5em;
+  margin-right: 0.5em;
+  color: #888;
+}
+
+pre div {
+  line-height: 1.5rem;
+  counter-increment: line;
+}
+
+pre div::before {
+  content: counter(line);
+  display: inline-block;
+  padding: 0 0.5em;
+  margin-right: 0.5em;
+  color: #888;
+}

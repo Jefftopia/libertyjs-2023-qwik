@@ -1,0 +1,458 @@
+{
+	// Place your liberty-js-2023 workspace snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and 
+	// description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope 
+	// is left empty or omitted, the snippet gets applied to all languages. The prefix is what is 
+	// used to trigger the snippet and the body will be expanded and inserted. Possible variables are: 
+	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. 
+	// Placeholders with the same ids are connected.
+	// Example:
+	// "Print to console": {
+	// 	"scope": "javascript,typescript",
+	// 	"prefix": "log",
+	// 	"body": [
+	// 		"console.log('$1');",
+	// 		"$2"
+	// 	],
+	// 	"description": "Log output to console"
+	// }
+    "0_types": {
+        "prefix": "0_types",
+        "body": [
+            "import { type QRL } from \"@builder.io/qwik\";",
+            "",
+            "export interface ComponentDef {",
+            "\tsource: string;",
+            "\ttarget: string;",
+            "\ttargetFramework: FrameworkValues|undefined;",
+            "\tuid: string;",
+            "}",
+            "",
+            "export interface ComponentStore {",
+            "\tcomponents: ComponentDef[];",
+            "\taddComponent: QRL<(this: ComponentStore, comp: ComponentDef) => void>;",
+            "}",
+            "",
+            "type FrameworkValues = 'angular'|'vue'|'react'|'svelte'|'stenciljs'|'lit';"
+        ]
+    },
+    "1_html_structure": {
+    "prefix": "1_html_structure",
+    "body": [
+        "\t\t<section class=\"max-w bg-white mx-4\">",
+        "\t\t\t<div class=\"grid gap-4 grid-cols-2\">",
+        "\t\t\t\t\t${1}",
+        "\t\t\t\t<div>",
+        "\t\t\t\t\t<h3 class=\"mb-3\">Output</h3>",
+        "\t\t\t\t\t<code> {/* later we will make this <Code></Code> component */}",
+        "\t\t\t\t\t</code>",
+        "\t\t\t\t</div>",
+        "\t\t\t</div>",
+        "\t\t</section>"
+    ]
+},
+"2_defined_form": {
+    "prefix": "2_define_form",
+    "body": [
+        "const EditorFormSchema = object({",
+        "  framework: enumType(",
+        "    [\"angular\", \"react\", \"vue\", \"svelte\", \"stenciljs\", \"lit\"],",
+        "    \"Hey, you did not pick a framework!\"",
+        "  ),",
+        "  componentDefinition: string([",
+        "    minLength(1, \"Hey, thats not a component\"),",
+        "    maxLength(500, \"Hey, this component is a bit much, dont you think?\"),",
+        "  ]),",
+        "});",
+        "type EditorForm = Input<typeof EditorFormSchema>;"
+    ]
+    },
+   "3_set_initial_values": {
+    "prefix": "3_set_initial_values",
+    "body": [
+        "export const useformLoader = routeLoader\\$<InitialValues<EditorForm>>(() => ({",
+        "\tframework: \"angular\",",
+        "\tcomponentDefinition: `",
+        "\t@Component({",
+        "\tselector: 'my-app',",
+        "\ttemplate: \\`",
+        "\t\t<h1>Hello from {{name}}!</h1>",
+        "\t\t<a target=\"_blank\" href=\"https://angular.io/start\">",
+        "\t\t\tLearn more about Angular ",
+        "\t\t</a>",
+        "\t\\`,",
+        "})",
+        "export class App {",
+        "\tname = 'Angular';",
+        "}",
+        "\t`,",
+        "}));"
+    ]
+},
+"4_createForm": {
+  "prefix": "4_createForm",
+  "body": [
+    "  const [editorForm, { Form, Field }] = useForm<",
+    "    EditorForm,",
+    "    OpenAI.Chat.ChatCompletion.Choice",
+    "  >({",
+    "    loader: useformLoader(),",
+    "    // validate: valiForm$(EditorFormSchema),",
+    "   // action: useFormAction(),",
+    "  });",
+    ""
+  ],
+  "description": "13_useForm"
+},
+	"5_add_form_element": {
+    "prefix": "5_add_form_element",
+    "body": [
+        "<Form onSubmit\\$={handleSubmit}>",
+        "${1}",
+        "</Form>"
+    ]
+	},
+"6_framework_field": {
+    "prefix": "6_framework_field",
+    "body": [
+        "          <Field name=\"framework\">",
+        "            {(field, props) => (",
+        "              ${1}",
+        "            )}",
+        ""
+    ]
+	},
+"7_framework_select": {
+    "prefix": "7_framework_select",
+    "body": [
+        "              <div class=\"flex flex-col mb-3\">",
+        "                <select {...props} class=\"border-2 rounded-sm p-2\">",
+        "                  {[",
+        "                    { label: \"Angular\", value: \"angular\" },",
+        "                    { label: \"Vue\", value: \"vue\" },",
+        "                    { label: \"React\", value: \"react\" },",
+        "                    { label: \"Svelte\", value: \"svelte\" },",
+        "                    { label: \"Stencil\", value: \"stenciljs\" },",
+        "                    { label: \"lit\", value: \"lit\" },",
+        "                  ].map(({ label, value }) => (",
+        "                    <option",
+        "                      key={value}",
+        "                      label={value}",
+        "                      value={value}",
+        "                      selected={field.value === value}",
+        "                    >",
+        "                      {label}",
+        "                    </option>",
+        "                  ))}",
+        "                </select>",
+        "              </div>${1}"
+    ]
+	},
+	"8_framework_select_error": {
+    "prefix": "8_framework_select_error",
+    "body": [
+        "                {field.error && <div>{field.error}</div>}"
+    ]
+	},
+"9_add_field_framework_component_def": {
+    "prefix": "9_add_field_framework_component_def",
+    "body": [
+        "          <Field name=\"componentDefinition\">",
+        "            {(field, props) => (",
+        "              ${1}",
+        "            )}",
+        ""
+    ]
+	},
+"10_framework_textarea": {
+    "prefix": "10_framework_textarea",
+    "body": [
+        "              <div class=\"flex flex-col mb-3\">",
+        "                <label for=\"textarea-1\" class=\"m-2\">",
+        "                  Enter details",
+        "                </label>",
+        "                <textarea",
+        "                  {...props}",
+        "                  id=\"textarea-1\"",
+        "                  rows={25}",
+        "                  value={field.value}",
+        "                  class=\"border-2 rounded-sm p-2\"",
+        "                />",
+        "                {field.error && <div>{field.error}</div>}",
+        "              </div>${1}"
+    ]
+	},
+"11_handleSubmit": {
+    "prefix": "11_handleSubmit",
+    "body": [
+        "\tconst handleSubmit: QRL<SubmitHandler<EditorForm>> = \\$(() => {",
+        "\t\tconsole.log(\"runs on client\");",
+        "\t});"
+    ]
+},
+"12_formAction": {
+    "prefix": "12_formAction",
+    "body": [
+        "export const useFormAction = formAction\\$<",
+        "  EditorForm,",
+        "  OpenAI.Chat.ChatCompletion.Choice",
+        ">(async (values, requestEvent) => {",
+        "  // runs on server",
+        "  console.log(\"[useFormAction ]\", values);",
+        "  ${1}",
+        "}, valiForm\\$(EditorFormSchema));",
+        ""
+    ]
+},
+"13_openapi": {
+    "prefix": "13_openapi",
+    "body": [
+        "  const client = new OpenAI({ apiKey: requestEvent.env.get(\"OPEN_API_KEY\") });",
+        "",
+        "  try {",
+        "    const completion = await client.chat.completions.create({",
+        "      messages: [",
+        "        {",
+        "          role: \"user\",",
+        "          content: `translate the following code into the ${values.framework} javascript framework, responding with code only: ${values.componentDefinition}`,",
+        "        },",
+        "      ],",
+        "      model: \"gpt-3.5-turbo\",",
+        "    });",
+        "",
+        "    console.log(completion.choices);",
+        "",
+        "    return {",
+        "      data: completion.choices[0],",
+        "      status: \"success\",",
+        "      message: \"success\",",
+        "    };",
+        "  } catch (err) {",
+        "    return {",
+        "      data: undefined,",
+        "      status: \"error\",",
+        "      message: \"error\",",
+        "    };",
+        "  }"
+    ]
+    },
+"14_form_submit_btn": {
+    "prefix": "14_form_submit_btn",
+    "body": [
+        "\t\t\t\t\t<button type=\"submit\" class=\"border-2 rounded-lg p-4\">",
+        "\t\t\t\t\t\tTranslate!",
+        "\t\t\t\t\t</button>"
+    ]
+},
+"15_framework_result_display": {
+    "prefix": "15_framework_result_display",
+    "body": [
+        "        <div>",
+        "          <h3 class=\"mb-3\">Output</h3>",
+        "          <pre class=\"rounded-sm\">",
+        "               {editorForm.response.data &&",
+        "              editorForm.response.data.message.content}",
+        "          </pre>",
+        "        </div>"
+    ]
+},
+"17_createContextId": {
+    "prefix": "17_createContextId",
+    "body": [
+        "export const ComponentsContext =",
+        "\tcreateContextId<ComponentStore>(\"component_store\");",
+        ""
+    ]
+},
+"18_use_context_provider": {
+    "prefix": "18_use_context_provider",
+    "body": [
+        "\tconst componentStore = useStore<ComponentStore>({",
+        "\t\tcomponents: [],",
+        "\t\taddComponent: \\$(function (this: ComponentStore, comp: ComponentDef) {",
+        "\t\t\tthis.components = [...this.components, comp];",
+        "\t\t}),",
+        "\t});",
+        "",
+        "\tuseContextProvider(ComponentsContext, componentStore);"
+    ]
+},
+"19_useContext": {
+    "prefix": "19_useContext",
+    "body": [
+        "\tconst componentStore = useContext(ComponentsContext);"
+    ]
+},
+"20_useTask": {
+    "prefix": "20_useTask",
+    "body": [
+        "\tuseTask\\$(({ track }) => {",
+        "\t\ttrack(() => editorForm.response.data);",
+        "\t});"
+    ]
+},
+"21_useTaskContents": {
+    "prefix": "21_useTaskContents",
+    "body": [
+        "\t\tif (editorForm.submitted && editorForm.response.data?.message.content) {",
+        "\t\t\tconst frameworkValue = getValue(editorForm, \"framework\");",
+        "\t\t\tconst componentDef = getValue(editorForm, \"componentDefinition\");",
+        "",
+        "\t\t\tconsole.log(\"use task running...\");",
+        "",
+        "\t\t\tconst entry: ComponentDef = {",
+        "\t\t\t\tsource: componentDef!,",
+        "\t\t\t\ttarget: editorForm.response.data.message.content,",
+        "\t\t\t\ttargetFramework: frameworkValue,",
+        "\t\t\t\tuid: crypto.randomUUID(),",
+        "\t\t\t};",
+        "",
+        "\t\t\tcomponentStore.addComponent(entry);",
+        "\t\t}"
+    ]
+},
+"22_add_link": {
+    "prefix": "22_add_link",
+    "body": [
+        "\t\t\t\t\t{componentStore.components[0]?.uid && (",
+        "\t\t\t\t\t\t<Link",
+        "\t\t\t\t\t\t\tclass=\"underline text-blue-600 hover:text-blue-800 visited:text-purple-600\"",
+        "\t\t\t\t\t\t\thref={`/components/${componentStore.components[0]?.uid}`}",
+        "\t\t\t\t\t\t>",
+        "\t\t\t\t\t\t\tView Result",
+        "\t\t\t\t\t\t</Link>",
+        "\t\t\t\t\t)}"
+    ]
+},
+"23_dynamic_route_component": {
+    "prefix": "23_dynamic_route_component",
+    "body": [
+        "import { component\\$ } from \"@builder.io/qwik\";",
+        "import { useLocation } from \"@builder.io/qwik-city\";",
+        "import ResultDisplay from \"../../../components/result-display/result-display\";",
+        "",
+        "export default component\\$(() => {",
+        "\tconst { params } = useLocation();",
+        "\tconst { id } = params;",
+        "\treturn <ResultDisplay uid={id}></ResultDisplay>;",
+        "});"
+    ]
+},
+"24_code_component": {
+    "prefix": "24_code_component",
+    "body": [
+        "import { Slot, component\\$, useStylesScoped\\$ } from \"@builder.io/qwik\";",
+        "import styles from \"./code.css?inline\";",
+        "",
+        "export default component\\$(() => {",
+        "\tuseStylesScoped\\$(styles);",
+        "",
+        "\treturn (",
+        "\t\t<div>",
+        "\t\t\t<pre class=\"rounded-sm\">",
+        "\t\t\t\t<Slot />",
+        "\t\t\t</pre>",
+        "\t\t</div>",
+        "\t);",
+        "});"
+    ]
+},
+"25_code_component_css": {
+    "prefix": "25_code_component_css",
+    "body": [
+        "pre {",
+        "\tbackground: #303030;",
+        "\tcolor: #f1f1f1;",
+        "\tpadding: 10px 16px;",
+        "\tborder-radius: 2px;",
+        "\t-moz-box-shadow: inset 0 0 10px #000;",
+        "\tbox-shadow: inset 0 0 10px #000;",
+        "\tcounter-reset: line 1;",
+        "}",
+        "",
+        "pre > span::before {",
+        "\tcontent: \"1\";",
+        "\tdisplay: inline-block;",
+        "\tpadding: 0 0.5em;",
+        "\tmargin-right: 0.5em;",
+        "\tcolor: #888;",
+        "}",
+        "",
+        "pre div {",
+        "\tline-height: 1.5rem;",
+        "\tcounter-increment: line;",
+        "}",
+        "",
+        "pre div::before {",
+        "\tcontent: counter(line);",
+        "\tdisplay: inline-block;",
+        "\tpadding: 0 0.5em;",
+        "\tmargin-right: 0.5em;",
+        "\tcolor: #888;",
+        "}"
+    ]
+},
+"26_result_display": {
+    "prefix": "26_result_display",
+    "body": [
+        "import { component\\$, useContext } from \"@builder.io/qwik\";",
+        "import { ComponentsContext } from \"~/root\";",
+        "import Code from \"../editor/code\";",
+        "",
+        "interface CompProps {",
+        "\tuid: string;",
+        "}",
+        "",
+        "export default component\\$((props: CompProps) => {",
+        "\tconst { uid } = props;",
+        "\tconst componentStore = useContext(ComponentsContext);",
+        "\tconst component = componentStore.components.find((el) => el.uid === uid);",
+        "",
+        "\treturn (",
+        "\t\t<div>",
+        "\t\t\t{!component && <div>Component not found!</div>}",
+        "\t\t\t{component && (",
+        "\t\t\t\t<div>",
+        "\t\t\t\t\t<h3>Source:</h3>",
+        "\t\t\t\t\t<Code>{component.source}</Code>",
+        "\t\t\t\t\t<br />",
+        "\t\t\t\t\t<h3>Target Framework:</h3>",
+        "\t\t\t\t\t<Code>{component.targetFramework}</Code>",
+        "\t\t\t\t\t<br />",
+        "\t\t\t\t\t<h3>Target:</h3>",
+        "\t\t\t\t\t<Code>{component.target}</Code>",
+        "\t\t\t\t</div>",
+        "\t\t\t)}",
+        "\t\t</div>",
+        "\t);",
+        "});"
+    ]
+},
+"extra_14_middleware": {
+    "prefix": "middleware",
+    "body": [
+        "export const onRequest: RequestHandler = async ({ headers }) => {",
+        "\theaders.set(\"X-SRF-TOKEN\", Math.random().toString(36).replace(\"0.\", \"\"));",
+        "};"
+    ]
+},
+    "extra_set_form_value_handler": {
+        "prefix": "set_form_value_handler",
+        "body": [
+            "\tconst handleButtonClick = \\$(() => {",
+            "\t\tsetValue(editorForm, \"framework\", \"svelte\");",
+            "\t});"
+        ]
+    },
+"extra_set_form_value_button": {
+    "prefix": "set_form_value_button",
+    "body": [
+        "\t\t\t<button",
+        "\t\t\t\tclass=\"bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded\"",
+        "\t\t\t\ttype=\"button\"",
+        "\t\t\t\tonClick\\$={handleButtonClick}",
+        "\t\t\t>",
+        "\t\t\t\tSet the framework to 'svelte'",
+        "\t\t\t</button>"
+    ]
+},    
+}
